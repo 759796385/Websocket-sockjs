@@ -1,0 +1,51 @@
+html,body{
+	height:100%
+}
+
+.wrap{
+	min-height:100%
+}
+
+.head{
+	margin: 0px -15px;
+	margin-bottom: 3%;
+	background-color:black;
+}
+
+.span12{
+	padding-bottom: 6%;
+}
+
+.online{
+	padding:3% 10%;
+	background-color: #f5f5f5;
+	border: 1px solid #7f9397;
+	border-radius: .5em;
+
+}
+.list-unstyled{
+	font-weight: bold;
+}
+
+.human{
+	position: relative;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.outbtn{
+	margin: 5% 0%;
+}
+
+.chat{
+	padding: 10px 20px 10px;
+	background-color: #f5f5f5;
+	border: 1px solid #7f9397;
+	border-radius: .5em;
+	max-height: 450px;
+	overflow: auto;
+}
+
+.footer{
+	 margin-top: -6%;
+}

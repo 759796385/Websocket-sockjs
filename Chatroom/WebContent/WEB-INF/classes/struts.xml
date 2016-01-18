@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 指定全局国际化资源文件 -->
+	<constant name="struts.i18n.encoding" value="utf-8"/>
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="true" />
+    <!-- <constant name="struts.action.extension" value="html,action" />-->
+	<package name="tq" extends="struts-default" namespace="/main">
+		<!-- 输入邮箱注册-->
+		<action name="email" class="UserAction" method="sendMail">
+			<result>/main/regist.jsp</result>
+			<result name="error">/main/regist.jsp</result>
+		</action>
+		<!-- 用户邮箱跳转页面 -->
+		<action name="detail" class="UserAction" method="detail">
+			<result>/WEB-INF/content/email.jsp</result>
+			<result name="error">/main/regist.jsp</result>
+		</action>
+		<!-- 注册用户 -->
+		<action name="regist" class="UserAction" method="regist">
+			<result>/main/login.jsp</result>
+			<result name="error">/main/regist.jsp</result>
+		</action>
+		<!-- 登陆action -->
+		<action name="login" class="UserAction">
+			<result>/WEB-INF/content/chat.html</result>
+			<result name="error">/main/login.jsp</result>
+		</action>
+	</package>
+   
+   
+   <package name="json" namespace="/json" extends="json-default">
+   		
+   </package>
+</struts>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/websocket
+    http://www.springframework.org/schema/websocket/spring-websocket.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+	
+	<bean name="datasource" class="org.springframework.jndi.JndiObjectFactoryBean"
+	p:jndiName="java:comp/env/jdbc/mysql"/>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+    p:dataSource-ref="datasource">
+    	<property name="mappingResources">
+    		<list>
+				<value>com/newtonk/entity/User.hbm.xml</value>
+				<value>com/newtonk/entity/Silence.hbm.xml</value>
+    		</list>
+    	</property>
+    	<!-- 定义hibernate sessionFactory的属性 -->
+    	<property name="hibernateProperties">
+    		<props>
+    		<!-- 定义数据库方言 -->
+    			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+    			<prop key="hibernate.hbm2ddl.auto">update</prop>
+    			<prop key="hibernate.show_sql">true</prop>
+    			<prop key="hibernate.format_sql">true</prop>
+    			<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+    		</props>
+    	</property>
+    </bean>
+    
+    
+     <!-- dao -->
+    <bean id="IUserDAO" class="com.newtonk.dao.impl.UserDAOImpl" p:sessionFactory-ref="sessionFactory"></bean>
+    
+    <!-- service -->
+    <bean id="IUserService" class="com.newtonk.service.impl.UserServiceImpl" p:dao-ref="IUserDAO"></bean>
+
+    <!-- Action -->
+ 	<bean id="UserAction" class="com.newtonk.action.UserAction" scope="prototype" p:service-ref="IUserService"></bean>
+ 	
+ 	
+	
+    
+    
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+    p:sessionFactory-ref="sessionFactory"/>
+	<!-- 事务 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*get" read-only="true"/>
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<!-- 配置一个切入点 -->
+		<aop:pointcut expression="bean(*Service)" id="myPointcut"/>
+		<!-- 配置事务 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"/>
+	</aop:config>
+	
+ 	
+ 	<!--WebSocket实例-->
+ 	<bean id="WebSocketHandler" class="com.newtonk.springwebsocket.WebSocketHandler"/>
+
+	
+	<websocket:handlers >
+	    <websocket:mapping path="/webSocketServer" handler="WebSocketHandler"/>
+	     <websocket:handshake-interceptors>
+	        <bean class="com.newtonk.interceptor.WebSocketHandshakaInterceptor"/>
+	    </websocket:handshake-interceptors>
+	</websocket:handlers >
+ 	<websocket:handlers >
+		<websocket:mapping path="/webSocketServer" handler="WebSocketHandler" />
+		<websocket:handshake-interceptors>
+			<bean class="cn.com.softvan.websocket.HandshakeInterceptor" />
+		</websocket:handshake-interceptors>
+		<websocket:sockjs />
+	</websocket:handlers>
+ 	
+	<bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+	    <property name="maxTextMessageBufferSize" value="8192"/>
+	    <property name="maxBinaryMessageBufferSize" value="8192"/>
+	    <property name="maxSessionIdleTimeout" value="900000"/>
+	    <property name="asyncSendTimeout" value="5000"/>
+	</bean> 
+	
+	
+</beans>
