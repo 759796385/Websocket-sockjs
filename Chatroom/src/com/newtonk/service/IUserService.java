@@ -22,10 +22,26 @@ public interface IUserService {
 	public boolean regist(User user) throws Exception;
 
 	/**
-	 * 检查用户名是否重复
+	 * 检查是否能注册
 	 * 
 	 * @param user
 	 * @return true重复 false不重复
 	 */
-	public boolean check(User user);
+	public boolean checkCanRegist(User user);
+
+	/**
+	 * 保存未激活用户
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public int saveUnActivation(User user);
+
+	/**
+	 * 加载用户
+	 * 
+	 * @param encodeId
+	 * @return
+	 */
+	public User getUserById(int encodeId);
 }

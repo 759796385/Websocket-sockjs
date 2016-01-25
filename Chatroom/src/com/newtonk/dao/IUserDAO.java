@@ -19,4 +19,12 @@ public interface IUserDAO extends BaseDAO<User> {
 	 * @return true重复 false不重复
 	 */
 	public boolean check(User user);
+
+	/**
+	 * 根据用户名查询
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public User getUserByName(User user);
 }

@@ -10,16 +10,19 @@
 	<div id="message"></div>
   <script type="text/javascript" src="js/sockjs-0.3.min.js"></script>
 	<script type="text/javascript">
-		websocket = null;
-		//判断当前浏览器是否支持WebSocket
+  		websocket = null;
+      domain= location.hostname;
+  		//判断当前浏览器是否支持WebSocket
       if('WebSocket' in window){
           console.log("使用websocket连接");
-          websocket = new WebSocket("ws://localhost/Chatroom/ws/webSocketServer");
-    	  //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
+         // websocket = new WebSocket("ws://localhost/Chatroom/ws/webSocketServer");
+          //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
+    	  websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
       }
       else{
           console.log("浏览器等级低,使用SockJs连接");
-    	  websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
+    	  //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
+          websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
       }
 
       //连接发生错误的回调方法
@@ -34,7 +37,8 @@
       }
        
       //接收到消息的回调方法
-      websocket.onmessage = function(){
+      websocket.onmessage = function(event){
+    	  console.log("收到信息");
           setMessageInnerHTML(event.data);
       }
        

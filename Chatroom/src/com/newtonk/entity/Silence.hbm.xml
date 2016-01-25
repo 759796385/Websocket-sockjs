@@ -4,6 +4,7 @@
 <!-- Generated 2016-1-13 18:27:01 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.newtonk.entity.Silence" table="SILENCE">
+    <cache usage="nonstrict-read-write" />
         <id name="sid" type="int">
             <column name="SID" />
             <generator class="assigned" />

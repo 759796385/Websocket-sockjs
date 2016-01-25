@@ -1,20 +1,33 @@
 package com.newtonk.action;
 
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.interceptor.ServletRequestAware;
+
 import com.newtonk.entity.User;
 import com.newtonk.service.IUserService;
+import com.newtonk.util.Base64Util;
 import com.newtonk.util.MessageDigestUtils;
 import com.newtonk.util.SendMail;
 import com.newtonk.util.UserIdentity;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class UserAction extends ActionSupport {
+public class UserAction extends ActionSupport implements ServletRequestAware {
 	private User user;
 	private IUserService service;
 	private String name;
+	private HttpServletRequest request;
+	private String id;
 
 	public void setService(IUserService service) {
 		this.service = service;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public void setName(String name) {
@@ -62,7 +75,7 @@ public class UserAction extends ActionSupport {
 	}
 
 	/**
-	 * 注册
+	 * 注册 账号保护期，无法抢注
 	 * 
 	 * @return
 	 * @throws Exception
@@ -73,11 +86,13 @@ public class UserAction extends ActionSupport {
 		}
 		user.setPassword(MessageDigestUtils.sha1(user.getPassword()));// sha15加密);
 		user.setIdentity(UserIdentity.FANS);
+		user.setDate(new Date());
+		user.setState(true);
 		boolean result = service.regist(user);
-		if (result) {// 重复了，重新注册
+		if (result) {// 注册成功
 			addActionMessage("注册成功，请登陆");
 			return SUCCESS;
-		} else {// 注册成功
+		} else {// 重复了，重新注册
 			addActionError("您的账号被抢注了。。");
 			return ERROR;
 		}
@@ -90,23 +105,32 @@ public class UserAction extends ActionSupport {
 	 * @throws Exception
 	 */
 	public String detail() throws Exception {
-		if (name == null || name.length() == 0) {
+		if (name == null || name.length() == 0 || id == null
+				|| id.length() == 0) {
 			// 非法获得URL
 			return ERROR;
 		}
-		ActionContext context = ActionContext.getContext();
-		User user = (User) context.getSession().get("user");// session植入信息,半小时内有效
-		if (user == null) {
-			// session过期
-			addActionError("注册信息过期，请重新注册");
+		int encodeId = 0;
+		String encodeName = null;
+		try {
+			encodeId = Integer.parseInt(Base64Util.decodeBase64(id));
+			encodeName = Base64Util.decodeBase64(name);
+		} catch (Exception e) {// 解密失败,加密被篡改
+			addActionError("非法输入");
 			return ERROR;
 		}
-		String uname = MessageDigestUtils.sha1(user.getName());
-		if (!uname.equals(name)) {
-			addActionError("请先正常注册");// 非法入侵
+		User result = service.getUserById(encodeId);
+		// 检查传递信息是否被篡改
+		if (!result.getName().equals(encodeName)) {
+			addActionError("非法输入");
 			return ERROR;
 		}
-		this.user = user;
+		if (new Date().after(result.getDate())) {
+			addActionError("邮件过期");
+			return ERROR;
+		}
+		// 此时可注册
+		this.user = result;
 		return SUCCESS;
 	}
 
@@ -132,20 +156,25 @@ public class UserAction extends ActionSupport {
 			addActionError("邮箱不正确");
 			return ERROR;
 		}
-		// 检测用户名是否重复
-		boolean result = service.check(user);
-		if (result) {
-			addActionError("用户已存在");
-			return ERROR;
-		} else {// 无重复用户名 sendemail
-			ActionContext context = ActionContext.getContext();
-			context.getSession().put("user", user);// session植入信息,半小时内有效
-			String shname = MessageDigestUtils.sha1(user.getName());
-			String location = "http://localhost/Chatroom/main/detail.action?name="
-					+ shname;
+		// 检测用户名能否注册
+		boolean can = service.checkCanRegist(user);
+		if (can) {// 能够注册 发送email
+			int uid = service.saveUnActivation(user);
+			String base64name = Base64Util.encodeBase64(user.getName());// 加密用户名和id
+			String base64id = Base64Util.encodeBase64("" + uid);
+			// 获取访问路径
+			String path = request.getContextPath();
+			String basePath = request.getScheme() + "://"
+					+ request.getServerName() + ":" + request.getServerPort()
+					+ path + "/";
+			String location = basePath + "main/detail.action?name="
+					+ base64name + "&id=" + base64id;
 			SendMail.send(user.getEmail(), location);
 			addActionMessage("已发送邮件到您的邮箱，请注意查收");
 			return SUCCESS;
+		} else {// 不能注册
+			addActionError("用户已存在");
+			return ERROR;
 		}
 	}
 
@@ -174,5 +203,10 @@ public class UserAction extends ActionSupport {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 }

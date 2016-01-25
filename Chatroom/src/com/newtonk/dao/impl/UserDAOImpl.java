@@ -33,4 +33,18 @@ public class UserDAOImpl extends BaseDAOHibernate4<User> implements IUserDAO {
 		return false;
 	}
 
+	/*
+	 * 根据用户名查询用户
+	 * 
+	 * @see com.newtonk.dao.IUserDAO#getUserByName(com.newtonk.entity.User)
+	 */
+	@Override
+	public User getUserByName(User user) {
+		List<User> result = find("from User u where u.name=?0", user.getName());
+		if (result != null && result.size() != 0) {
+			return result.get(0);
+		}
+		return null;
+	}
+
 }

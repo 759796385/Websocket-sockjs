@@ -39,6 +39,7 @@
 				    <div class="container-fluid ">
 				    	<p class="text-center text-danger" id="error"></p>
 				    	<input type="hidden" name="user.email" value="<s:property value='%{user.email}'/>"/>
+				    	<input type="hidden" name="user.uid" value="<s:property value='%{user.uid}'/>"/>
 				      	<button class="btn btn-info btn-block" data-loading-text="正在登录..." type="submit">注册</button>
 				    </div>
 				</div>

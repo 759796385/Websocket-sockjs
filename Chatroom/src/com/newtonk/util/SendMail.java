@@ -46,7 +46,7 @@ public class SendMail {
 			throws Exception {
 		InternetAddress[] address = null;
 		to = emailaddress; // 收件人
-		message = "<center><h2>欢迎您注册聊天室</h2><p style='color:red'>点击以下连接进行邮箱验证,本邮件半小时内有效</p><a href="
+		message = "<center><h2>欢迎您注册聊天室</h2><p style='color:red'>点击以下连接进行邮箱验证,本邮件一小时内有效</p><a href="
 				+ content + ">棒棒哒的人都点我设置密码</a></center>"; // 邮件内容
 		Properties pro = null;
 		pro = System.getProperties();

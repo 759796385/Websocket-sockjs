@@ -20,5 +20,11 @@
         <property name="identity" type="java.lang.String">
             <column name="IDENTITY" />
         </property>
+        <property name="date" type="java.util.Date">
+            <column name="DATE" />
+        </property>
+        <property name="state" type="java.lang.Boolean">
+            <column name="STATE" />
+        </property>
     </class>
 </hibernate-mapping>

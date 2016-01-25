@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>聊天室</title>
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script type="text/javascript" src="js/jquery-2.1.1.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	
+</head>
+<body>
+	<div class="container-fluid wrap">
+		<!-- 导航栏 -->
+		<div class="row-fluid ">
+			<div class="head">
+				<ul class="nav nav-pills">
+					<li >
+						<a href="#">首页</a>
+					</li>
+					<li class="active">
+						<a href="#">聊天室</a>
+					</li>
+					<li class="disabled">
+						<a href="#">关于</a>
+					</li>
+					<li class="dropdown pull-right">
+						<a href="javascript:;">当前用户：张三</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 主体 -->
+		<div class="row-fluid main">
+			<!-- left-->
+			<div class="col-md-3 left">
+				<div class="online">
+					<h4>
+						<small>在线用户</small>
+					</h4>
+					<p>
+						<small><em style="color:#a7aeaf;">当前在线人数 12 人</em></small>
+					</p>
+					<div class="scroll human">
+					<ul class="list-unstyled ">
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人a
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人b
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人c
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人d
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人e
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人f
+						</li>
+						<li>
+							<span class="glyphicon glyphicon-user"></span>路人g
+						</li>
+
+					</ul>
+					</div>
+				</div>
+				<!-- 退出聊天室按钮 -->
+				<center>
+					<button type="button" class="btn btn-primary outbtn" data-toggle="modal" data-target=".bs-example-modal-sm">退出聊天室</button>
+				</center>
+				<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+				  <div class="modal-dialog modal-sm">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title">确认框</h4>
+				      </div>
+				      <div class="modal-body">
+				        <p>你确定要离开聊天室吗？</p>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				        <button type="button" class="btn btn-primary">确定</button>
+				      </div>
+				    </div><!--modal-content -->
+				  </div><!--modal-dialog -->
+				</div><!--modal -->
+			</div>
+
+			<!--right-->
+			<div class="col-md-8 col-md-offset-1 right">
+				<div class="row-fluid messageare">
+					<div class="chat">
+						<p class="text-danger">
+							[系统提示] 欢迎来到websocket聊天室，本站搭建中~
+						</p>
+						<p class="text-info">
+							[提示] 成功连接聊天服务器...
+						</p>
+						<p class="text-muted">
+							[提示] 用户a进入聊天室,welcome!
+						</p>
+						<p class="text-muted">
+							[提示] 用户b进入聊天室，welcome!
+						</p>
+						<p class="text-primary">
+							[用户] 路人a : 大家好
+						</p>
+						<p class="text-primary">
+							[用户] 用户b : 你好呀！
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+						<p class="text-muted">
+							[提示] 用户a离开聊天室，bye~
+						</p>
+					</div>
+				</div>
+				<div class="row-fluid sendmsg">
+				<legend></legend>
+					<form class="form-inline">
+						<div class="form-group" >
+							    <label class="sr-only" for="message">message</label>
+							    <div class="input-group" >
+							  		<div class="input-group-addon" id="private_chat" style="cursor:pointer;  ">@All</div>
+							    	<input type="text" class="form-control"  id="message"  placeholder="开始聊天吧~"/>
+							  	</div>
+							
+						</div>
+						<button class="btn btn-default" type="button">提交</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 页脚 -->
+	<div class="container-fluid footer">
+		<div class="row-fluid ">
+			<div class="col-md-12">
+				<hr/>
+				<p>
+					聊天室初步UI草图
+				</p>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function () {
+		  $('[data-toggle="popover"]').popover();
+
+		  $(".chat > p").click(function(){
+		  		var text = $(this).text();
+		  		if(text.indexOf("[用户]")==-1){
+		  			return;
+		  		}
+		  		var end = text.indexOf(":");
+		  		var start = 13;
+		  		var user = text.substring(start,end);
+		  		$("#private_chat").text("@"+user);
+		  });
+		});
+		$("#private_chat").click(function(){
+			$(this).text("@All");
+		})
+	</script>
+</body>
+</html>

@@ -12,8 +12,10 @@ html,body{
 	background-color:black;
 }
 
-.span12{
-	padding-bottom: 6%;
+
+
+.chat>.text-primary{
+	cursor:pointer;
 }
 
 .online{

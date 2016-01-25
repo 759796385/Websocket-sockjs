@@ -10,6 +10,8 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
+import com.newtonk.entity.User;
+
 public class WebSocketHandshakaInterceptor extends
 		HttpSessionHandshakeInterceptor {
 	/*
@@ -19,16 +21,15 @@ public class WebSocketHandshakaInterceptor extends
 	public boolean beforeHandshake(ServerHttpRequest request,
 			ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		System.out.println("执行我了");
 		if (request instanceof ServletServerHttpRequest) {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 			HttpSession session = servletRequest.getServletRequest()
 					.getSession(false);
 			if (session != null) {
 				// 使用userName区分WebSocketHandler，以便定向发送消息
-				String userName = (String) session
-						.getAttribute(Constants.SESSION_USERNAME);
-				// attributes.put(Constants.WEBSOCKET_USERNAME, userName);
+				String userName = ((User) session
+						.getAttribute(Constants.SESSION_USER)).getName();
+				attributes.put(Constants.WEBSOCKET_USERNAME, userName);
 			}
 		}
 		return super.beforeHandshake(request, response, wsHandler, attributes);

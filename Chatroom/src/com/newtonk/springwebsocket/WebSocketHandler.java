@@ -6,6 +6,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.newtonk.interceptor.Constants;
+import com.newtonk.util.SocketSessionUtil;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 	public WebSocketHandler() {
@@ -17,12 +18,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session)
 			throws Exception {
-		String inquiryId = (String) session.getAttributes().get(
-				Constants.WEBSOCKET_USERNAME);
-		// HttpHeaders hy = session.getHandshakeHeaders();
-		// int empNo = (int) session.getAttributes().get("empNo");
-		// SocketSessionUtil.add(inquiryId, empNo, session);
-		System.out.println(inquiryId);
+		String name = SocketSessionUtil.getName(session);
+		System.out.println("用户" + name + "连入服务器");
+		SocketSessionUtil.add(name, session);
 	}
 
 	/*
@@ -31,11 +29,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session,
 			TextMessage message) throws Exception {
-		// String inquiryId = (String) session.getAttributes().get("inquiryId");
-		// int empNo = (int) session.getAttributes().get("empNo");
-		// SocketSessionUtil.sendMessage(inquiryId, empNo, "【来自服务器的复读机】："
-		// + message.getPayload().toString());
-		System.out.println("test");
+		String name = (String) session.getAttributes().get(
+				Constants.WEBSOCKET_USERNAME);
+		SocketSessionUtil.sendMessageToALL(name, name + ":"
+				+ message.getPayload().toString());
 	}
 
 	/*
@@ -44,9 +41,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTransportError(WebSocketSession session,
 			Throwable exception) throws Exception {
-		// String inquiryId = (String) session.getAttributes().get("inquiryId");
-		// int empNo = (int) session.getAttributes().get("empNo");
-		// SocketSessionUtil.remove(inquiryId, empNo);
+		String user = (String) session.getAttributes().get(
+				Constants.WEBSOCKET_USERNAME);
+		SocketSessionUtil.remove(user);
+		exception.printStackTrace();
 	}
 
 	/*
@@ -55,9 +53,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session,
 			CloseStatus status) throws Exception {
-		// String inquiryId = (String) session.getAttributes().get("inquiryId");
-		// int empNo = (int) session.getAttributes().get("empNo");
-		// SocketSessionUtil.remove(inquiryId, empNo);
+		String name = (String) session.getAttributes().get(
+				Constants.WEBSOCKET_USERNAME);
+		System.out.println("用户" + name + "断开服务器");
+		SocketSessionUtil.remove(name);
 	}
 
 	/*
