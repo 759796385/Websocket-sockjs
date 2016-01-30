@@ -27,8 +27,7 @@
 		</action>
 		<!-- 登陆action -->
 		<action name="login" class="UserAction">
-			<!-- <result>/WEB-INF/content/chat.html</result> -->
-			<result>/index.html</result>
+			<result>/WEB-INF/content/chat.jsp</result>
 			<result name="error">/main/login.jsp</result>
 		</action>
 	</package>

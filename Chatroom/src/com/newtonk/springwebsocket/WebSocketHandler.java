@@ -29,10 +29,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session,
 			TextMessage message) throws Exception {
-		String name = (String) session.getAttributes().get(
-				Constants.WEBSOCKET_USERNAME);
-		SocketSessionUtil.sendMessageToALL(name, name + ":"
-				+ message.getPayload().toString());
+		String name = SocketSessionUtil.getName(session);
+		SocketSessionUtil.sendMessage(name, message.getPayload().toString());
 	}
 
 	/*

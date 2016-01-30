@@ -156,6 +156,11 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 			addActionError("邮箱不正确");
 			return ERROR;
 		}
+		regex = "^[\u4E00-\u9FA5A-Za-z0-9_]+$";
+		if (!user.getName().matches(regex)) {
+			addActionError("用户名由中文英文数字和下划线组成");
+			return ERROR;
+		}
 		// 检测用户名能否注册
 		boolean can = service.checkCanRegist(user);
 		if (can) {// 能够注册 发送email

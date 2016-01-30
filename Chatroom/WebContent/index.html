@@ -8,13 +8,14 @@
 	<input type="text" name="message" id="text"/>
 	<button id="btn" onclick="send()">点我直连服务器</button>
 	<div id="message"></div>
-  <script type="text/javascript" src="js/sockjs-0.3.min.js"></script>
+  <script type="text/javascript" src="../js/sockjs-0.3.min.js"></script>
 	<script type="text/javascript">
   		websocket = null;
       domain= location.hostname;
   		//判断当前浏览器是否支持WebSocket
       if('WebSocket' in window){
           console.log("使用websocket连接");
+          setCookie('username','tangqiang',1);
          // websocket = new WebSocket("ws://localhost/Chatroom/ws/webSocketServer");
           //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
     	  websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
@@ -67,6 +68,14 @@
           var message = document.getElementById('text').value;
           websocket.send(message);
       }
+      /* c_name:cookie名称 value:值 expiredays:过期时间*/
+      function setCookie(c_name,value,expiredays)
+      {
+        var exdate=new Date();
+        exdate.setDate(exdate.getDate()+expiredays);
+        document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : "; expires="+exdate.toGMTString())+";path=/";
+      }
+
 	</script>
 </body>
 </html>

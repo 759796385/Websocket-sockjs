@@ -1,15 +1,17 @@
+<%@ page language="java" contentType="text/html;"
+    pageEncoding="UTF-8"%>
+<%@taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html>
 <html>
 <head lang="zh-CN">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>聊天室</title>
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script type="text/javascript" src="js/jquery-2.1.1.js"></script>
-	<script type="text/javascript" src="js/bootstrap.js"></script>
-	
+	<link rel="stylesheet" href="../css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<script type="text/javascript" src="../js/jquery-2.1.1.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.js"></script>
 </head>
 <body>
 	<div class="container-fluid wrap">
@@ -100,54 +102,6 @@
 						<p class="text-danger">
 							[系统提示] 欢迎来到websocket聊天室，本站搭建中~
 						</p>
-						<!--<p class="text-info">
-							[提示] 成功连接聊天服务器...
-						</p>
-						<p class="text-muted">
-							[提示] 用户a进入聊天室,welcome!
-						</p>
-						<p class="text-muted">
-							[提示] 用户b进入聊天室，welcome!
-						</p>
-						<p class="text-primary">
-							[用户] 路人a : 大家好
-						</p>
-						<p style="color:lawngreen">
-							[用户] 用户b : 你好呀！
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>
-						<p class="text-muted">
-							[提示] 用户a离开聊天室，bye~
-						</p>-->
 					</div>
 				</div>
 				<div class="row-fluid sendmsg">
@@ -180,15 +134,14 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="js/websocket.js"></script>
+	<script type="text/javascript" src="../js/sockjs-0.3.min.js"></script>
 	<script>
 		 websocket = null;
 	      domain= location.hostname;
 	  		//判断当前浏览器是否支持WebSocket
 	      if('WebSocket' in window){
 	          console.log("使用websocket连接");
-	          setCookie('username','tangqiang',1);
-	         // websocket = new WebSocket("ws://localhost/Chatroom/ws/webSocketServer");
+	          setCookie('username',"<s:property value='%{#session.user.name}'/>",1);
 	          //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
 	    	  websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
 	      }
@@ -197,24 +150,36 @@
 	    	  //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
 	          websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
 	      }
+	      /* c_name:cookie名称 value:值 expiredays:过期时间*/
+	      function setCookie(c_name,value,expiredays)
+	      {
+	        var exdate=new Date();
+	        exdate.setDate(exdate.getDate()+expiredays);
+	        document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : "; expires="+exdate.toGMTString())+";path=/";
+	      }
 
-		$(function () {
-		  $('[data-toggle="popover"]').popover();
-
-		  $(".chat > p").click(function(){
-		  		var text = $(this).text();
-		  		if(text.indexOf("[用户]")==-1){
-		  			return;
-		  		}
-		  		var end = text.indexOf(":");
-		  		var start = 13;
-		  		var user = text.substring(start,end);
-		  		$("#private_chat").text("@"+user);
-		  });
-		});
-		$("#private_chat").click(function(){
-			$(this).text("@All");
-		})
+	      //接收到消息的回调方法
+	      websocket.onmessage = function(event){
+	      	console.log("收到消息");
+	        analyzeMessage(event.data);
+	      }
+	            //连接发生错误的回调方法
+	      websocket.onerror = function(){
+	          setMessageInnerHTML("<p class='text-info'>[提示] 连接出错...</p>");
+	      };
+	       
+	      //连接成功建立的回调方法
+	      websocket.onopen = function(event){
+	        console.log("连接成功");
+	        setMessageInnerHTML("<p class='text-info'>[提示] 成功连接聊天服务器...</p>");
+	      }
+	       
+	      //连接关闭的回调方法
+	      websocket.onclose = function(){
+	        console.log("连接关闭");
+	        setMessageInnerHTML("<p class='text-info'>[提示] 断开服务器...</p>");
+	      }
 	</script>
+	<script type="text/javascript" src="../js/websocket.js"></script>
 </body>
 </html>
