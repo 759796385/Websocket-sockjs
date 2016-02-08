@@ -5,7 +5,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.newtonk.interceptor.Constants;
 import com.newtonk.util.SocketSessionUtil;
 
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -39,8 +38,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTransportError(WebSocketSession session,
 			Throwable exception) throws Exception {
-		String user = (String) session.getAttributes().get(
-				Constants.WEBSOCKET_USERNAME);
+		String user = SocketSessionUtil.getName(session);
 		SocketSessionUtil.remove(user);
 		exception.printStackTrace();
 	}
@@ -51,8 +49,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session,
 			CloseStatus status) throws Exception {
-		String name = (String) session.getAttributes().get(
-				Constants.WEBSOCKET_USERNAME);
+		String name = SocketSessionUtil.getName(session);
 		System.out.println("用户" + name + "断开服务器");
 		SocketSessionUtil.remove(name);
 	}

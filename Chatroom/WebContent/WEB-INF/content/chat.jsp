@@ -29,7 +29,7 @@
 						<a href="#">关于</a>
 					</li>
 					<li class="dropdown pull-right">
-						<a href="javascript:;">当前用户：张三</a>
+						<a href="javascript:;">当前用户：<s:property value='%{#session.user.name}'/></a>
 					</li>
 				</ul>
 			</div>
@@ -98,8 +98,8 @@
 			<!--right-->
 			<div class="col-md-8 col-md-offset-1 right">
 				<div class="row-fluid messageare">
-					<div class="chat" id="chat">
-						<p class="text-danger">
+					<div class="chat" id="chat"> 
+						<p class="text-danger" >
 							[系统提示] 欢迎来到websocket聊天室，本站搭建中~
 						</p>
 					</div>
@@ -135,51 +135,51 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="../js/sockjs-0.3.min.js"></script>
-	<script>
-		 websocket = null;
-	      domain= location.hostname;
-	  		//判断当前浏览器是否支持WebSocket
-	      if('WebSocket' in window){
-	          console.log("使用websocket连接");
-	          setCookie('username',"<s:property value='%{#session.user.name}'/>",1);
-	          //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
-	    	  websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
-	      }
-	      else{
-	          console.log("浏览器等级低,使用SockJs连接");
-	    	  //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
-	          websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
-	      }
-	      /* c_name:cookie名称 value:值 expiredays:过期时间*/
-	      function setCookie(c_name,value,expiredays)
-	      {
-	        var exdate=new Date();
-	        exdate.setDate(exdate.getDate()+expiredays);
-	        document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : "; expires="+exdate.toGMTString())+";path=/";
-	      }
-
-	      //接收到消息的回调方法
-	      websocket.onmessage = function(event){
-	      	console.log("收到消息");
-	        analyzeMessage(event.data);
-	      }
-	            //连接发生错误的回调方法
-	      websocket.onerror = function(){
-	          setMessageInnerHTML("<p class='text-info'>[提示] 连接出错...</p>");
-	      };
-	       
-	      //连接成功建立的回调方法
-	      websocket.onopen = function(event){
-	        console.log("连接成功");
-	        setMessageInnerHTML("<p class='text-info'>[提示] 成功连接聊天服务器...</p>");
-	      }
-	       
-	      //连接关闭的回调方法
-	      websocket.onclose = function(){
-	        console.log("连接关闭");
-	        setMessageInnerHTML("<p class='text-info'>[提示] 断开服务器...</p>");
-	      }
-	</script>
 	<script type="text/javascript" src="../js/websocket.js"></script>
+	<script>
+		       websocket = null;
+        domain= location.hostname;
+        //判断当前浏览器是否支持WebSocket
+        if('WebSocket' in window){
+            console.log("使用websocket连接");
+            setCookie('username',"<s:property value='%{#session.user.name}'/>",1);
+            //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
+          websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
+        }
+        else{
+            console.log("浏览器等级低,使用SockJs连接");
+          //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
+            websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
+        }
+       //  /* c_name:cookie名称 value:值 expiredays:过期时间*/
+        function setCookie(c_name,value,expiredays)
+        {
+          var exdate=new Date();
+          exdate.setDate(exdate.getDate()+expiredays);
+          document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : "; expires="+exdate.toGMTString())+";path=/";
+        }
+
+        //接收到消息的回调方法
+        websocket.onmessage = function(event){
+          console.log("收到消息");
+          analyzeMessage(event.data);
+        }
+       //        //连接发生错误的回调方法
+        websocket.onerror = function(){
+            setMessageInnerHTML("<p class='text-info'>[提示] 连接出错...</p>");
+        };
+         
+       //  //连接成功建立的回调方法
+        websocket.onopen = function(event){
+          console.log("连接成功");
+          setMessageInnerHTML("<p class='text-info'>[提示] 成功连接聊天服务器...</p>");
+        }
+         
+       //  //连接关闭的回调方法
+        websocket.onclose = function(){
+          console.log("连接关闭");
+          setMessageInnerHTML("<p class='text-info'>[提示] 断开服务器...</p>");
+        }
+	</script>
 </body>
 </html>

@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.socket.TextMessage;
@@ -220,15 +222,24 @@ public class SocketSessionUtil {
 	}
 
 	public static String unicode2String(String unicode) {
-		StringBuffer string = new StringBuffer();
-		String[] hex = unicode.split("%u");
-		for (int i = 1; i < hex.length; i++) {
-			// 转换出每一个代码点
-			int data = Integer.parseInt(hex[i], 16);
-			// 追加成string
-			string.append((char) data);
+		List<String> list = new ArrayList<String>();
+		String zz = "%u[0-9,a-z,A-Z]{4}";
+
+		// 正则表达式用法参考API
+		Pattern pattern = Pattern.compile(zz);
+		Matcher m = pattern.matcher(unicode);
+		while (m.find()) {
+			list.add(m.group());
 		}
-		return string.toString();
+		for (int i = 0, j = 2; i < list.size(); i++) {
+			String st = list.get(i).substring(j, j + 4);
+
+			// 将得到的数值按照16进制解析为十进制整数，再強转为字符
+			char ch = (char) Integer.parseInt(st, 16);
+			// 用得到的字符替换编码表达式
+			unicode = unicode.replace(list.get(i), String.valueOf(ch));
+		}
+		return unicode;
 	}
 
 	/**
@@ -242,10 +253,10 @@ public class SocketSessionUtil {
 		String message = result.get("message");
 		String toName = result.get("toName");
 		if (toName.equals(TO_ALL)) {// 公聊1#name@message
-			String msg = USER_MSG + "#" + TO_ALL + "@" + name + ":" + message;
+			String msg = USER_MSG + "#" + TO_ALL + "@" + name + " : " + message;
 			sendMessageToALL(name, msg);
 		} else {// 私聊
-			String msg = USER_MSG + "#" + toName + "@" + name + ":" + message;
+			String msg = USER_MSG + "#" + toName + "@" + name + " : " + message;
 			sendMessagetoUser(toName, msg);
 		}
 	}
@@ -260,7 +271,7 @@ public class SocketSessionUtil {
 	private static Map<String, String> analyzeMessage(String string) {
 		String[] result = string.trim().split("@");
 		Map<String, String> back = new HashMap<String, String>();
-		back.put("toName", result[0]);
+		back.put("toName", result[0].trim());
 		back.put("message", result[1]);
 		return back;
 	}
