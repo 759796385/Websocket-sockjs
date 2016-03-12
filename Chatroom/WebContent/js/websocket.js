@@ -21,10 +21,11 @@
           var chatstyle = $("#private_chat").text().substring(1);
           websocket.send(chatstyle+"@"+message);
       }
-
+      /*解析服务器信息*/
       function analyzeMessage(msg){
           var status  = msg.substring(0,msg.indexOf("#"));
           if(status=="0"){
+              onlineDOM();
               var message = msg.substring(msg.indexOf("#")+1);
               setMessageInnerHTML("<p class='text-muted'>[提示] "+message+"</p>");
           }if(status=="1"){
@@ -39,6 +40,20 @@
           }
       }
 
+      function onlineDOM(){
+        $.getJSON("json/online",function(data){
+                var $node = $("#human");
+                var obj = eval(data).result;
+                var num = obj.online_num;
+                $("#onlie_num").text(num);
+                var names= obj.names;
+                $node.empty();
+                for(var index in names){
+                  $node.append("<li> <span class='glyphicon glyphicon-user'></span>"+names[index]+"</li>");
+                }
+              });
+      } 
+
       $(function () {
         $("#text").click(function(){
           send();
@@ -49,10 +64,21 @@
         $('[data-toggle="popover"]').popover();
       });
 
-    $("#private_chat").click(function(){
-      $(this).text("@All");
-    })
-
+	  $("#private_chat").click(function(){
+	      $(this).text("@All");
+	  });
+	  /*退出，高级chrome直接白页*/
+	  $(".exists").click(function(){
+		  var userAgent = navigator.userAgent;
+		  if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") !=-1) {
+		     window.location.href="about:blank";
+		  } else {
+		     window.opener = null;
+		     window.open("", "_self");
+		     window.close();
+		  };
+	  });
+	 /*解析消息方式*/
     $(".chat").on('click','p',function(){
       var text = $(this).text();
       if(text.indexOf("[用户]")==-1){

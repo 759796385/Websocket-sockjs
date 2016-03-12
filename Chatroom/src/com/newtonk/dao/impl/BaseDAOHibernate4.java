@@ -10,7 +10,7 @@ import com.newtonk.dao.BaseDAO;
 
 public class BaseDAOHibernate4<T> implements BaseDAO<T> {
 	// Spring注入sessionFactory
-	private SessionFactory sessionFactory;
+	protected SessionFactory sessionFactory;
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;

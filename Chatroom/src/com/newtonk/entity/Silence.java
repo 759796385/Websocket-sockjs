@@ -9,6 +9,10 @@ public class Silence implements Serializable {
 	public Silence() {
 	}
 
+	public Silence(User user) {
+		this.user = user;
+	}
+
 	public int getSid() {
 		return sid;
 	}

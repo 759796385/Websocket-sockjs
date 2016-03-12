@@ -31,8 +31,8 @@
     		<!-- 定义数据库方言 -->
     			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
     			<prop key="hibernate.hbm2ddl.auto">update</prop>
-    			<prop key="hibernate.show_sql">true</prop>
-    			<prop key="hibernate.format_sql">true</prop>
+    			<prop key="hibernate.show_sql">false</prop>
+    			<prop key="hibernate.format_sql">false</prop>
     			<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
     			<!-- 二级缓存 -->
     			<prop key="hibernate.cache.use_second_level_cache">true</prop>
@@ -44,15 +44,19 @@
     
      <!-- dao -->
     <bean id="IUserDAO" class="com.newtonk.dao.impl.UserDAOImpl" p:sessionFactory-ref="sessionFactory"></bean>
+    <bean id="ISpeakDAO" class="com.newtonk.dao.impl.SpeakDAOImpl" p:sessionFactory-ref="sessionFactory"></bean>
     
     <!-- service -->
     <bean id="IUserService" class="com.newtonk.service.impl.UserServiceImpl" p:dao-ref="IUserDAO"></bean>
-
+	<bean id="ISpeakService" class="com.newtonk.service.impl.SpeakServiceImpl" 
+	p:dao-ref="ISpeakDAO" p:userDao-ref="IUserDAO"></bean>
+	
     <!-- Action -->
  	<bean id="UserAction" class="com.newtonk.action.UserAction" scope="prototype" p:service-ref="IUserService"></bean>
+ 	<bean id="JsonAction" class="com.newtonk.action.JsonAction" scope="prototype"></bean>
+ 	<bean id="SpeakAction" class="com.newtonk.action.SpeakAction" scope="prototype" p:service-ref="ISpeakService"></bean>
  	
- 	
-	
+	<bean id="serviceLocator" class="com.newtonk.util.SocketSessionUtil" scope="singleton" />
     
     
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"

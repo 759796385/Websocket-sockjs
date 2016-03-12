@@ -20,7 +20,7 @@
 				<div class="form-group has-success">
 				    <label for="nick_name" class="col-sm-2 col-md-2 control-label">用户名</label>
 				    <div class="col-sm-10 col-md-10">
-				    	<input type="text" class="form-control" name="user.name" placeholder="用户名" value="" required="required">
+				    	<input type="text" class="form-control" name="user.name" maxlength="7" minlength="2" placeholder="用户名" value="" required="required">
 				    </div>
 				</div>
 				<div class="form-group has-success">

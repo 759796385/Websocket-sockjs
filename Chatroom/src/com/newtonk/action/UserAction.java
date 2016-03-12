@@ -42,6 +42,12 @@ public class UserAction extends ActionSupport implements ServletRequestAware {
 		this.user = user;
 	}
 
+	public String logout() throws Exception {
+		ActionContext context = ActionContext.getContext();
+		context.getSession().remove("user");
+		return SUCCESS;
+	}
+
 	/*
 	 * µÇÂ½
 	 * 

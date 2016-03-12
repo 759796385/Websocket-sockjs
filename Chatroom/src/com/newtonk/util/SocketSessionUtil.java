@@ -11,17 +11,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.newtonk.entity.User;
 import com.newtonk.interceptor.Constants;
+import com.newtonk.service.ISpeakService;
 
-public class SocketSessionUtil {
+public class SocketSessionUtil implements BeanFactoryAware {
 	public static final int SYSTEM_MSG = 0;// 系统消息
 	public static final int USER_MSG = 1;// 用户消息
 	public static final String TO_ALL = "All";// 向所有人
 	private static Map<String, WebSocketSession> clients = new ConcurrentHashMap<>();
+	private static BeanFactory beanFactory = null;
 
 	/**
 	 * 保存一个连接
@@ -251,6 +257,9 @@ public class SocketSessionUtil {
 	public static void sendMessage(String name, String string) throws Exception {
 		Map<String, String> result = analyzeMessage(string);
 		String message = result.get("message");
+		if (!canSpeak(name)) {
+			return;
+		}
 		String toName = result.get("toName");
 		if (toName.equals(TO_ALL)) {// 公聊1#name@message
 			String msg = USER_MSG + "#" + TO_ALL + "@" + name + " : " + message;
@@ -259,6 +268,18 @@ public class SocketSessionUtil {
 			String msg = USER_MSG + "#" + toName + "@" + name + " : " + message;
 			sendMessagetoUser(toName, msg);
 		}
+	}
+
+	private static boolean canSpeak(String name) throws Exception {
+		ISpeakService service = (ISpeakService) beanFactory
+				.getBean("ISpeakService");
+		boolean result = service.canSpeak(new User(name, null, null));
+		if (!result) {// 被禁言
+			String message = SYSTEM_MSG + "#" + "对不起您被禁言！";
+			sendMessagetoUser(name, message);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -274,6 +295,11 @@ public class SocketSessionUtil {
 		back.put("toName", result[0].trim());
 		back.put("message", result[1]);
 		return back;
+	}
+
+	@Override
+	public void setBeanFactory(BeanFactory arg0) throws BeansException {
+		beanFactory = arg0;
 	}
 
 }

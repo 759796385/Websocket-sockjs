@@ -25,11 +25,23 @@
 					<li class="active">
 						<a href="#">聊天室</a>
 					</li>
-					<li class="disabled">
+					<s:if test="#session.user.identity!='粉丝'">
+						<li>
+							<a href="speakList" target="_blank">禁言管理</a>
+						</li>
+					</s:if>
+					<!-- <li class="disabled">
 						<a href="#">关于</a>
-					</li>
+					</li> -->
 					<li class="dropdown pull-right">
-						<a href="javascript:;">当前用户：<s:property value='%{#session.user.name}'/></a>
+						 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      						当前用户：<s:property value='%{#session.user.name}'/> <span class="caret"></span>
+   						 </a>
+   						 <ul class="dropdown-menu">
+					     	<li>
+					     		<a href="logout">注销用户</a>	
+					     	</li>	
+					    </ul>
 					</li>
 				</ul>
 			</div>
@@ -43,31 +55,11 @@
 						<small>在线用户</small>
 					</h4>
 					<p>
-						<small><em style="color:#a7aeaf;">当前在线人数 12 人</em></small>
+						<small><em style="color:#a7aeaf;">当前在线人数 <span id="onlie_num"></span> 人</em></small>
 					</p>
 					<div class="scroll human">
-					<ul class="list-unstyled ">
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人a
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人b
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人c
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人d
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人e
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人f
-						</li>
-						<li>
-							<span class="glyphicon glyphicon-user"></span>路人g
-						</li>
+					<ul class="list-unstyled" id="human">
+						
 
 					</ul>
 					</div>
@@ -88,7 +80,7 @@
 				      </div>
 				      <div class="modal-footer">
 				        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				        <button type="button" class="btn btn-primary">确定</button>
+				        <button type="button" class="btn btn-primary exists">确定</button>
 				      </div>
 				    </div><!--modal-content -->
 				  </div><!--modal-dialog -->
@@ -140,17 +132,16 @@
 		       websocket = null;
         domain= location.hostname;
         //判断当前浏览器是否支持WebSocket
-        if('WebSocket' in window){
-            console.log("使用websocket连接");
-            setCookie('username',"<s:property value='%{#session.user.name}'/>",1);
-            //websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
-          websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
-        }
-        else{
+        if(!window.WebSocket){
             console.log("浏览器等级低,使用SockJs连接");
-          //websocket = new SockJS("http://localhost/Chatroom/sockjs/webSocketServer");
             websocket = new SockJS("http://"+domain+"/Chatroom/sockjs/webSocketServer");
         }
+        else{
+        	console.log("使用websocket连接");
+            setCookie('username',"<s:property value='%{#session.user.name}'/>",1);
+            websocket = new WebSocket("ws://"+domain+"/Chatroom/ws/webSocketServer");
+        }
+        
        //  /* c_name:cookie名称 value:值 expiredays:过期时间*/
         function setCookie(c_name,value,expiredays)
         {
@@ -167,11 +158,13 @@
        //        //连接发生错误的回调方法
         websocket.onerror = function(){
             setMessageInnerHTML("<p class='text-info'>[提示] 连接出错...</p>");
+            $("#text").attr("disabled",'disabled');
         };
          
        //  //连接成功建立的回调方法
         websocket.onopen = function(event){
           console.log("连接成功");
+          onlineDOM();
           setMessageInnerHTML("<p class='text-info'>[提示] 成功连接聊天服务器...</p>");
         }
          
@@ -179,7 +172,9 @@
         websocket.onclose = function(){
           console.log("连接关闭");
           setMessageInnerHTML("<p class='text-info'>[提示] 断开服务器...</p>");
+          $("#text").attr("disabled",'disabled');
         }
+       
 	</script>
 </body>
 </html>

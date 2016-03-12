@@ -7,7 +7,7 @@
     <cache usage="nonstrict-read-write" />
         <id name="sid" type="int">
             <column name="SID" />
-            <generator class="assigned" />
+            <generator class="native" />
         </id>
         <many-to-one name="user" class="com.newtonk.entity.User" fetch="join">
             <column name="USER" />

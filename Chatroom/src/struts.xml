@@ -30,10 +30,31 @@
 			<result>/WEB-INF/content/chat.jsp</result>
 			<result name="error">/main/login.jsp</result>
 		</action>
+		<!-- 注销 -->
+		<action name="logout" class="UserAction" method="logout">
+			<result>/main/login.jsp</result>
+		</action>
+		<!-- 管理禁言 -->
+		<action name="speakList" class="SpeakAction">
+			<result>/WEB-INF/content/speak.jsp</result>
+		</action>
+		<!-- 添加禁言 -->
+		<action name="addSpeak" class="SpeakAction" method="add">
+			<result type="redirectAction">speakList</result>
+		</action>
+		<!-- 移除禁言 -->
+		<action name="removeSpeak" class="SpeakAction" method="remove">
+			<result type="redirectAction">speakList</result>
+		</action>
 	</package>
-   
-   
-   <package name="json" namespace="/json" extends="json-default">
-   		
+	
+   <package name="json" namespace="/main/json" extends="json-default">
+   		<action name="online" class="JsonAction">
+        	<result type="json">
+	                <param name="noCache">true</param>
+	                <param name="contentType">text/html</param>
+            </result>
+        </action>
    </package>
+   
 </struts>
