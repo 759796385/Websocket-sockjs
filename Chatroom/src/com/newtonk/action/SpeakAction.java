@@ -1,17 +1,16 @@
 package com.newtonk.action;
 
 import java.util.List;
-import java.util.Map;
 
 import com.newtonk.entity.Silence;
 import com.newtonk.service.ISpeakService;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class SpeakAction extends ActionSupport {
 	private ISpeakService service;
 	private List<Silence> silences;
 	private Silence silence;
+	private int id;
 
 	public void setService(ISpeakService service) {
 		this.service = service;
@@ -34,7 +33,11 @@ public class SpeakAction extends ActionSupport {
 	 * @throws Exception
 	 */
 	public String add() throws Exception {
-		service.add(silence.getUser().getName());
+		try {
+			service.add(silence.getUser().getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return SUCCESS;
 	}
 
@@ -45,19 +48,16 @@ public class SpeakAction extends ActionSupport {
 	 * @throws Exception
 	 */
 	public String remove() throws Exception {
-		ActionContext act = ActionContext.getContext();
-		Map<String, Object> params = act.getParameters();
-		String[] id = (String[]) params.get("id");
-		int aid = 0;
-		// 获得id
-		if (id == null) {
-			return SUCCESS;// 没有参数
-		} else {
-			aid = Integer.parseInt(id[0]);
+		if (id == 0) {
+			return SUCCESS;
 		}
 		Silence s = new Silence();
-		s.setSid(aid);
-		service.remove(s);
+		s.setSid(id);
+		try {
+			service.remove(s);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return SUCCESS;
 	}
 
@@ -71,6 +71,14 @@ public class SpeakAction extends ActionSupport {
 
 	public void setSilence(Silence silence) {
 		this.silence = silence;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

@@ -16,13 +16,18 @@ public class SpeakDAOImpl extends BaseDAOHibernate4<Silence> implements
 	 */
 	@Override
 	public Silence containUser(User user) throws Exception {
-		String hql = "select s from Silence s left join s.user u where u.name=?0";
+		String hql = "select s from Silence s left join s.user u where u.name= :name";
 		List<Silence> result = getSessionFactory().getCurrentSession()
 				.createQuery(hql).setCacheable(true)
-				.setParameter("" + 0, user.getName()).list();
+				.setString("name", user.getName()).list();
 		if (result.size() > 0) {
 			return result.get(0);
 		}
 		return null;
+	}
+
+	public void clearSecondCache() {
+		getSessionFactory().getCache().evictAllRegions();
+		getSessionFactory().getCache().evictQueryRegions();
 	}
 }

@@ -4,7 +4,7 @@
 <!-- Generated 2016-1-13 18:23:16 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.newtonk.entity.User" table="USER">
-    <cache usage="nonstrict-read-write" />
+    <!-- <cache usage="nonstrict-read-write" /> -->
         <id name="uid" type="int">
             <column name="UID" />
             <generator class="native" />

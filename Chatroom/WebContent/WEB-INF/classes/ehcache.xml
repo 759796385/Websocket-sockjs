@@ -58,14 +58,9 @@
         overflowToDisk="false"
         /> 
         
-        <cache name="com.newtonk.entity.User"
-        maxElementsInMemory="1000"
-        eternal="false"
-        timeToIdleSeconds="300"
-        timeToLiveSeconds="400"
-        overflowToDisk="false"
-        /> 
-
+       
+		<!-- timeToIdleSeconds:对象在cache中的最大闲置时间/s   
+		timeToLiveSeconds :无论对象访问或是不访问(闲置),这个对象在cache中的存活时间 -->
     <!-- Place configuration for your caches following -->
 
 </ehcache>

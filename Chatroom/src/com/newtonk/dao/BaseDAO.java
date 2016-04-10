@@ -3,7 +3,11 @@ package com.newtonk.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 public interface BaseDAO<T> {
+	public SessionFactory getSessionFactory();
+
 	T get(Class<T> entityClazz, Serializable id);
 
 	void saveOrUpadate(T entity);

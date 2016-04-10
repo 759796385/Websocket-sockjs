@@ -7,6 +7,7 @@
       function setMessageInnerHTML(innerHTML){
          var $node =  $('#chat');
          $node.append(innerHTML);
+         $node[0].scrollTop = $node[0].scrollHeight;
       }
        
       //关闭连接
@@ -17,6 +18,7 @@
       //发送消息
       function send(){
           var message = document.getElementById('message').value;
+          if(message==""){return}
           // var chatstyle = document.getElementById("private_chat").text();
           var chatstyle = $("#private_chat").text().substring(1);
           websocket.send(chatstyle+"@"+message);

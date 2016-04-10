@@ -31,12 +31,17 @@
     		<!-- 定义数据库方言 -->
     			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
     			<prop key="hibernate.hbm2ddl.auto">update</prop>
-    			<prop key="hibernate.show_sql">false</prop>
-    			<prop key="hibernate.format_sql">false</prop>
+    			<prop key="hibernate.show_sql">true</prop>
+    			<prop key="hibernate.format_sql">true</prop>
     			<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
     			<!-- 二级缓存 -->
     			<prop key="hibernate.cache.use_second_level_cache">true</prop>
     			<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<!-- 使用查询缓存 -->
+				<prop key="hibernate.cache.use_query_cache">true</prop>	
+				<!-- 查看二级缓存内容 -->
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
     		</props>
     	</property>
     </bean>

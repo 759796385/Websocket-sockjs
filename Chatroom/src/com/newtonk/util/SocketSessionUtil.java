@@ -68,7 +68,7 @@ public class SocketSessionUtil implements BeanFactoryAware {
 	 */
 	public static void remove(String username) throws IOException {
 		clients.remove(getKey(username));
-		sendUserLeave(username);// 发送进入信息
+		sendUserLeave(username);// 发送离开信息
 	}
 
 	/**
@@ -255,11 +255,14 @@ public class SocketSessionUtil implements BeanFactoryAware {
 	 *            客户端发来的消息
 	 */
 	public static void sendMessage(String name, String string) throws Exception {
-		Map<String, String> result = analyzeMessage(string);
-		String message = result.get("message");
 		if (!canSpeak(name)) {
 			return;
 		}
+		Map<String, String> result = analyzeMessage(string);
+		if (result == null) {
+			return;
+		}
+		String message = result.get("message");
 		String toName = result.get("toName");
 		if (toName.equals(TO_ALL)) {// 公聊1#name@message
 			String msg = USER_MSG + "#" + TO_ALL + "@" + name + " : " + message;
@@ -292,6 +295,9 @@ public class SocketSessionUtil implements BeanFactoryAware {
 	private static Map<String, String> analyzeMessage(String string) {
 		String[] result = string.trim().split("@");
 		Map<String, String> back = new HashMap<String, String>();
+		if (result.length == 1) {// 非法发送空字符
+			return null;//
+		}
 		back.put("toName", result[0].trim());
 		back.put("message", result[1]);
 		return back;
